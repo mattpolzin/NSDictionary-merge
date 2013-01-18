@@ -14,6 +14,6 @@
 // point to either obj1, obj2, a mutable copy of obj1, or a mutable copy of
 // obj2. This is because a mutable copy of obj1 or obj2 is only created if obj1
 // and obj2 cannot be merged as-is.
-+ (BOOL)mergeObj:(id<Merge>)obj1 withObj:(id<Merge>)obj2 result:(NSObject**)result;
++ (BOOL)mergeObj:(NSObject<Merge>*)obj1 withObj:(NSObject<Merge>*)obj2 result:(NSObject**)result;
 
 @end

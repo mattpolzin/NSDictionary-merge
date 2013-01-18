@@ -16,9 +16,9 @@
 - (void)mergeWithObj:(NSObject*)obj
 {
 	if (![obj isKindOfClass:[NSDictionary class]]) {
-		NSAssert(@"Attempted to merge objects of different types: %@\n,\n %@", self, obj);
+		NSAssert(@"Attempted to merge objects of different types: %@\n,\n %@", [self description], [obj description]);
 	}
-	[self mergeWithDictionary:obj];
+	[self mergeWithDictionary:(NSDictionary*)obj];
 }
 
 - (BOOL)canMergeWithObj:(NSObject*)obj
@@ -31,7 +31,7 @@
 
 - (void)mergeWithDictionary:(NSDictionary*)dict
 {
-	KeyEnumerator* ke = [dict keyEnumerator];
+	NSEnumerator* ke = [dict keyEnumerator];
 	
 	for (id<NSCopying> key in ke) {
 		id myObj = [self objectForKey:key];

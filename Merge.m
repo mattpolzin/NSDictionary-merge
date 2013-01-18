@@ -12,21 +12,21 @@
 
 @implementation Merge
 
-+ (BOOL)mergeObj:(id<Merge>)obj1 withObj:(id<Merge>)obj2 result:(NSObject**)result
++ (BOOL)mergeObj:(NSObject<Merge>*)obj1 withObj:(NSObject<Merge>*)obj2 result:(NSObject**)result
 {
-	id<Merge> mergeObj = nil;
+	NSObject<Merge>* mergeObj = nil;
 	id otherObj = nil;
-	if ([obj1 respondsToSelector:@selector(canMergeWithObj:)] && [mergeObj canMergeWithObj:obj2]) {
+	if ([obj1 respondsToSelector:@selector(canMergeWithObj:)] && [obj1 canMergeWithObj:obj2]) {
 		// will obj1 merge with obj2?
 		mergeObj = obj1;
 		otherObj = obj2;
-	} else if ([obj2 respondsToSelector:@selector(canMergeWithObj:)] && [obj canMergeWithObj:obj1]) {
+	} else if ([obj2 respondsToSelector:@selector(canMergeWithObj:)] && [obj2 canMergeWithObj:obj1]) {
 		// will obj merge with obj1?
 		mergeObj = obj2;
 		otherObj = obj1;
 	} else {
 		if ([obj1 respondsToSelector:@selector(mutableCopy)]) {
-			MERGE_LOG(@"creating a mutable copy of obj1 to see if that copy can be merged.";
+			MERGE_LOG(@"creating a mutable copy of obj1 to see if that copy can be merged.");
 			id mutableobj1 = [[obj1 mutableCopy] autorelease];
 			if ([mutableobj1 respondsToSelector:@selector(canMergeWithObj:)] && [mutableobj1 canMergeWithObj:obj2]) {
 				// will a mutable copy of obj1 merge with obj2?
@@ -37,7 +37,7 @@
 		if (!mergeObj && [obj2 respondsToSelector:@selector(mutableCopy)]) {
 			MERGE_LOG(@"creating a mutable copy of obj2 to see if that copy can be merged.");
 			id mutableobj2 = [[obj2 mutableCopy] autorelease];
-			if ([mutableobj2 respondsToSelector:@selector(canMergeWithObj:)] && [mutableObj canMergeWithObj:obj1]) {
+			if ([mutableobj2 respondsToSelector:@selector(canMergeWithObj:)] && [mutableobj2 canMergeWithObj:obj1]) {
 				// will a mutable copy of obj2 merge with obj1?
 				mergeObj = mutableobj2;
 				otherObj = obj1;
@@ -56,7 +56,7 @@
 		*result = mergeObj;
 		return YES;
 	}
-	MERGE_LOG(@"objects were not merged.", key);
+	MERGE_LOG(@"objects were not merged.");
 	
 	return NO;
 }
