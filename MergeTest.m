@@ -1,6 +1,6 @@
 
 #import "MergeTest.h"
-#import "NSMutableDictionary-merge.h"
+#import "NSDictionary-merge.h"
 
 @implementation MergeTest
 
@@ -21,9 +21,12 @@
 	NSLog(@"dict1: %@", tmp1);
 	NSLog(@"dict2: %@", tmp2);
 
+	NSDictionary* result = [tmp1 mergeMutableCopyWithDictionary:tmp2];
+	
 	[tmp1 mergeWithDictionary:tmp2];
-
+	
 	NSLog(@"merged dict: %@", tmp1);
+	NSLog(@"merged dict: %@", result);
 }
 
 @end
