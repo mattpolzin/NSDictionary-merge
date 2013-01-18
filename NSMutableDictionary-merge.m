@@ -20,6 +20,14 @@
 	[self mergeWithDictionary:obj];
 }
 
+- (BOOL)canMergeWithObj:(NSObject*)obj
+{
+	if (![obj isKindOfClass:[NSDictionary class]]) {
+		return NO;
+	}
+	return YES;
+}
+
 - (void)mergeWithDictionary:(NSDictionary*)dict
 {
 	KeyEnumerator* ke = [dict keyEnumerator];
@@ -38,38 +46,47 @@
 			
 			MERGE_LOG(@"attempting merge of objects for key: %@", key);
 			
-			if ([obj isKindOfClass:[myObj class]] || [myObj isKindOfClass:[obj class]]) {
-				// This means it is possible the two objects adhere to the merge
-				// protocol and can be merged that way.
-				
-				id myNewObj = myObj;
-				BOOL canMerge = NO;
-				
-				if ([myNewObj respondsToSelector:@selector(mergeWithObj:)]) {
-					// we are good to go with this object
-					canMerge = YES;
-				} else if ([myNewObj respondsToSelector:@selector(mutableCopy)]) {
-					// If we can create a mutable copy of this object, it may
-					// respond to the mergeWithObj method.
+			id<Merge> mergeObj = nil;
+			id otherObj = nil;
+			if ([myObj respondsToSelector:@selector(canMergeWithObj:)] && [mergeObj canMergeWithObj:obj]) {
+				// will myObj merge with obj?
+				mergeObj = myObj;
+				otherObj = obj;
+			} else if ([obj respondsToSelector:@selector(canMergeWithObj:)] && [obj canMergeWithObj:myObj]) {
+				// will obj merge with myObj?
+				mergeObj = obj;
+				otherObj = myObj;
+			} else {
+				if ([myObj respondsToSelector:@selector(mutableCopy)]) {
 					MERGE_LOG(@"creating a mutable copy of obj for key (%@) to see if that copy can be merged.", key);
-					myNewObj = [[myNewObj mutableCopy] autorelease];
-					
-					if ([myNewObj respondsToSelector:@selector(mergeWithObj:)]) {
-						// we are good to go with this object
-						canMerge = YES;
+					id mutableMyObj = [[myObj mutableCopy] autorelease];
+					if ([mutableMyObj respondsToSelector:@selector(canMergeWithObj:)] && [mutableMyObj canMergeWithObj:obj]) {
+						// will a mutable copy of myObj merge with obj?
+						mergeObj = mutableMyObj;
+						otherObj = obj;
 					}
 				}
-				
-				if (canMerge) {
-					[myNewObj mergeWithObj:obj];
-					[self setObject:myNewObj forKey:key];
-					MERGE_LOG(@"merged objects for key: %@", key);
-				} else {
-					MERGE_LOG(@"objects for key (%@) were not merged because at least one of them does not adhere to the Merge protocol.", key);
+				if (!mergeObj && [obj respondsToSelector:@selector(mutableCopy)]) {
+					MERGE_LOG(@"creating a mutable copy of obj for key (%@) to see if that copy can be merged.", key);
+					id mutableObj = [[obj mutableCopy] autorelease];
+					if ([mutableObj respondsToSelector:@selector(canMergeWithObj:)] && [mutableObj canMergeWithObj:myObj]) {
+						// will a mutable copy of obj merge with myObj?
+						mergeObj = mutableObj;
+						otherObj = myObj;
+					}
 				}
+			}
+			
+			if (mergeObj) {
+				// we can merge!
 				
+				NSAssert(otherObj, @"code bug: otherObj is not set even though mergeObj is set!");
+				
+				[mergeObj mergeWithObj:otherObj];
+				[self setObject:mergeObj forKey:key];
+				MERGE_LOG(@"merged objects for key: %@", key);
 			} else {
-				MERGE_LOG(@"objects for key (%@) were not of same kind of class. No merge was possible.", key);
+				MERGE_LOG(@"objects for key (%@) were not merged because neither of them adheres to the Merge protocol.", key);
 			}
 		}
 	}
