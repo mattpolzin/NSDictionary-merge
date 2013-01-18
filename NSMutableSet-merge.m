@@ -19,9 +19,9 @@
 		[self mergeWithSet:(NSSet *)obj];
 	} else if ([obj isKindOfClass:[NSArray class]]) {
 		[self mergeWithArray:(NSArray*)obj];
+	} else {
+		[NSException raise:@"MergeException" format:@"Attempted to merge objects of different types: %@\n,\n %@", [self description], [obj description]];
 	}
-	
-	[NSException raise:@"MergeException" format:@"Attempted to merge objects of different types: %@\n,\n %@", [self description], [obj description]];
 }
 
 - (BOOL)canMergeWithObj:(NSObject *)obj

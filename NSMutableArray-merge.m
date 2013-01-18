@@ -19,9 +19,9 @@
 		[self mergeWithArray:(NSArray*)obj allowDuplicateEntries:NO];
 	} else if ([obj isKindOfClass:[NSSet class]]) {
 		[self mergeWithSet:(NSSet *)obj allowDuplicateEntries:NO];
+	} else {
+		[NSException raise:@"MergeException" format:@"Attempted to merge objects of different types: %@\n,\n %@", [self description], [obj description]];
 	}
-	
-	[NSException raise:@"MergeException" format:@"Attempted to merge objects of different types: %@\n,\n %@", [self description], [obj description]];
 }
 
 - (BOOL)canMergeWithObj:(NSObject *)obj
