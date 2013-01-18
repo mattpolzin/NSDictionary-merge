@@ -6,7 +6,7 @@
 
 + (void)mergeTest
 {
-	NSArray* subArray1 = [NSArray arrayWithObjects:@"string 1", @"string 4", @"string 5", nil];
+	NSArray* subArray1 = [NSArray arrayWithObjects:@"string 1", @"string 2", @"string 4", @"string 5", nil];
 		NSArray* subArray2 = [NSArray arrayWithObjects:@"string 3", @"string 2", nil];
 	
 		NSDictionary* subDict1 = [NSDictionary dictionaryWithObjectsAndKeys:@"string A", @"string A", @"string C", @"string C", nil];
