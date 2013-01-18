@@ -15,18 +15,17 @@
 
 - (void)mergeWithObj:(NSObject*)obj
 {
-	if (![obj isKindOfClass:[NSDictionary class]]) {
-		NSAssert(@"Attempted to merge objects of different types: %@\n,\n %@", [self description], [obj description]);
-	}
+	NSAssert([obj isKindOfClass:[NSDictionary class]],@"Attempted to merge objects of different types: %@\n,\n %@", [self description], [obj description]);
+	
 	[self mergeWithDictionary:(NSDictionary*)obj];
 }
 
 - (BOOL)canMergeWithObj:(NSObject*)obj
 {
-	if (![obj isKindOfClass:[NSDictionary class]]) {
-		return NO;
+	if ([obj isKindOfClass:[NSDictionary class]]) {
+		return YES;
 	}
-	return YES;
+	return NO;
 }
 
 - (void)mergeWithDictionary:(NSDictionary*)dict

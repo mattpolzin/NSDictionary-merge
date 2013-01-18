@@ -11,4 +11,6 @@
 // dictionaries created from plists.
 - (void)mergeWithArray:(NSArray*)array allowDuplicateEntries:(BOOL)duplicateEntries;
 
+- (void)mergeWithSet:(NSSet*)set allowDuplicateEntries:(BOOL)duplicateEntries;
+
 @end

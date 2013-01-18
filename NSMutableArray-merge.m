@@ -15,23 +15,35 @@
 
 - (void)mergeWithObj:(NSObject *)obj
 {
-	if (![obj isKindOfClass:[NSDictionary class]]) {
-		NSAssert(@"Attempted to merge objects of different types: %@\n,\n %@", [self description], [obj description]);
+	if ([obj isKindOfClass:[NSArray class]]) {
+		[self mergeWithArray:(NSArray*)obj allowDuplicateEntries:NO];
+	} else if ([obj isKindOfClass:[NSSet class]]) {
+		[self mergeWithSet:(NSSet *)obj allowDuplicateEntries:NO];
 	}
-	[self mergeWithArray:(NSArray*)obj allowDuplicateEntries:NO];
+	
+	[NSException raise:@"MergeException" format:@"Attempted to merge objects of different types: %@\n,\n %@", [self description], [obj description]];
 }
 
 - (BOOL)canMergeWithObj:(NSObject *)obj
 {
-	if (![obj isKindOfClass:[NSArray class]]) {
-		return NO;
+	if ([obj isKindOfClass:[NSArray class]] || [obj isKindOfClass:[NSSet class]]) {
+		return YES;
 	}
-	return YES;
+	return NO;
 }
 
 - (void)mergeWithArray:(NSArray *)array allowDuplicateEntries:(BOOL)duplicateEntries
 {
 	for (id entry in array) {
+		if (duplicateEntries || ![self containsObject:entry]) {
+			[self addObject:entry];
+		}
+	}
+}
+
+- (void)mergeWithSet:(NSSet*)set allowDuplicateEntries:(BOOL)duplicateEntries
+{
+	for (id entry in set) {
 		if (duplicateEntries || ![self containsObject:entry]) {
 			[self addObject:entry];
 		}
