@@ -36,20 +36,34 @@
 			// The key already existed in self, so we need to see if the two
 			// objects can be merged.
 			
-			MERGE_LOG(@"merged objects for key: %@", key);
+			MERGE_LOG(@"attempting merge of objects for key: %@", key);
 			
 			if ([obj isKindOfClass:[myObj class]] || [myObj isKindOfClass:[obj class]]) {
 				// This means it is possible the two objects adhere to the merge
 				// protocol and can be merged that way.
 				
 				id myNewObj = myObj;
-				if ([myNewObj respondsToSelector:@selector(mutableCopy)]) {
-					myNewObj = [[myNewObj mutableCopy] autorelease];
-				}
+				BOOL canMerge = NO;
 				
 				if ([myNewObj respondsToSelector:@selector(mergeWithObj:)]) {
+					// we are good to go with this object
+					canMerge = YES;
+				} else if ([myNewObj respondsToSelector:@selector(mutableCopy)]) {
+					// If we can create a mutable copy of this object, it may
+					// respond to the mergeWithObj method.
+					MERGE_LOG(@"creating a mutable copy of obj for key (%@) to see if that copy can be merged.", key);
+					myNewObj = [[myNewObj mutableCopy] autorelease];
+					
+					if ([myNewObj respondsToSelector:@selector(mergeWithObj:)]) {
+						// we are good to go with this object
+						canMerge = YES;
+					}
+				}
+				
+				if (canMerge) {
 					[myNewObj mergeWithObj:obj];
 					[self setObject:myNewObj forKey:key];
+					MERGE_LOG(@"merged objects for key: %@", key);
 				} else {
 					MERGE_LOG(@"objects for key (%@) were not merged because at least one of them does not adhere to the Merge protocol.", key);
 				}
