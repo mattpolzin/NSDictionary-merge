@@ -28,6 +28,22 @@
 	return NO;
 }
 
+- (BOOL)isMutableObj
+{
+	BOOL mutable = YES;
+	@try {
+		[self setObject:[NSNull null] forKey:[NSNull null]];
+	}
+	@catch (NSException *exception) {
+		mutable = NO;
+	}
+	
+	if (mutable) {
+		[self removeObjectForKey:[NSNull null]];
+	}
+	return mutable;
+}
+
 - (void)mergeWithDictionary:(NSDictionary*)dict
 {
 	NSEnumerator* ke = [dict keyEnumerator];

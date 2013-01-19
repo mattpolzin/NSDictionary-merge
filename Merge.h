@@ -3,7 +3,7 @@
 #import <Foundation/Foundation.h>
 #import "MergeProtocol.h"
 
-@interface Merge
+@interface Merge : NSObject
 
 // Merge obj1 with obj2 if possible. If successful, returns YES; otherwise NO.
 // If successful, result points to the merged object. Note that this method may

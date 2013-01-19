@@ -16,11 +16,11 @@
 {
 	NSObject<Merge>* mergeObj = nil;
 	id otherObj = nil;
-	if ([obj1 respondsToSelector:@selector(canMergeWithObj:)] && [obj1 canMergeWithObj:obj2]) {
+	if ([obj1 respondsToSelector:@selector(canMergeWithObj:)] && [obj1 canMergeWithObj:obj2] && [obj1 respondsToSelector:@selector(isMutableObj)] && [obj1 isMutableObj]) {
 		// will obj1 merge with obj2?
 		mergeObj = obj1;
 		otherObj = obj2;
-	} else if ([obj2 respondsToSelector:@selector(canMergeWithObj:)] && [obj2 canMergeWithObj:obj1]) {
+	} else if ([obj2 respondsToSelector:@selector(canMergeWithObj:)] && [obj2 canMergeWithObj:obj1] && [obj2 respondsToSelector:@selector(isMutableObj)] && [obj2 isMutableObj]) {
 		// will obj merge with obj1?
 		mergeObj = obj2;
 		otherObj = obj1;

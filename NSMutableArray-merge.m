@@ -32,6 +32,22 @@
 	return NO;
 }
 
+- (BOOL)isMutableObj
+{
+	BOOL mutable = YES;
+	@try {
+		[self addObject:[NSNull null]];
+	}
+	@catch (NSException *exception) {
+		mutable = NO;
+	}
+	
+	if (mutable) {
+		[self removeObject:[NSNull null]];
+	}
+	return mutable;
+}
+
 - (void)mergeWithArray:(NSArray *)array allowDuplicateEntries:(BOOL)duplicateEntries
 {
 	for (id entry in array) {
