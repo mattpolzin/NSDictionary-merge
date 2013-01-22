@@ -3,7 +3,7 @@
 #import "NSMutableDictionary-merge.h"
 #import "Merge.h"
 
-#define MERGE_DEBUG 1
+#define MERGE_DEBUG 0
 
 #if MERGE_DEBUG
 #   define MERGE_LOG(fmt, ...) NSLog(fmt, ##__VA_ARGS__)
