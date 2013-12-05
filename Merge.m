@@ -27,20 +27,30 @@
 	} else {
 		if ([obj1 respondsToSelector:@selector(mutableCopy)]) {
 			MERGE_LOG(@"creating a mutable copy of obj1 to see if that copy can be merged.");
-			id mutableobj1 = [[obj1 mutableCopy] autorelease];
-			if ([mutableobj1 respondsToSelector:@selector(canMergeWithObj:)] && [mutableobj1 canMergeWithObj:obj2]) {
-				// will a mutable copy of obj1 merge with obj2?
-				mergeObj = mutableobj1;
-				otherObj = obj2;
+			@try {
+				id mutableobj1 = [[obj1 mutableCopy] autorelease];
+				if ([mutableobj1 respondsToSelector:@selector(canMergeWithObj:)] && [mutableobj1 canMergeWithObj:obj2]) {
+					// will a mutable copy of obj1 merge with obj2?
+					mergeObj = mutableobj1;
+					otherObj = obj2;
+				}
+			} @catch (NSException *exception) {
+				// all NSObject subclasses will say they respond to mutableCopy, but classes
+				// like NSNumber will throw an exception when trying to call mutableCopy on them.
 			}
 		}
 		if (!mergeObj && [obj2 respondsToSelector:@selector(mutableCopy)]) {
 			MERGE_LOG(@"creating a mutable copy of obj2 to see if that copy can be merged.");
-			id mutableobj2 = [[obj2 mutableCopy] autorelease];
-			if ([mutableobj2 respondsToSelector:@selector(canMergeWithObj:)] && [mutableobj2 canMergeWithObj:obj1]) {
-				// will a mutable copy of obj2 merge with obj1?
-				mergeObj = mutableobj2;
-				otherObj = obj1;
+			@try {
+				id mutableobj2 = [[obj2 mutableCopy] autorelease];
+				if ([mutableobj2 respondsToSelector:@selector(canMergeWithObj:)] && [mutableobj2 canMergeWithObj:obj1]) {
+					// will a mutable copy of obj2 merge with obj1?
+					mergeObj = mutableobj2;
+					otherObj = obj1;
+				}
+			} @catch (NSException* exception) {
+				// all NSObject subclasses will say they respond to mutableCopy, but classes
+				// like NSNumber will throw an exception when trying to call mutableCopy on them.
 			}
 		}
 	}
